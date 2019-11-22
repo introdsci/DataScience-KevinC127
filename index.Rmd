@@ -1,6 +1,6 @@
 ---
 title: " " #replace the title with something short and catchy to represent your project
-subtitle: "____'s Data Science Portfolio" #replace blank with your name
+subtitle: "Kevin Chen's Data Science Portfolio" #replace blank with your name
 output:
   html_document:
     df_print: paged
@@ -8,15 +8,16 @@ output:
 
 ## Abstract
 
-In under 250 words give a brief summary of the project so far.
+This is the computation of datas that is going to be used for building a dataset showing trends and correlation about video games between their sales, rating, when they were sold and etc. The final hope was to show what major factor effect the overall value of the video game.
 
 ### 1. Discovery and Data Preparation
 
 Provide a one-sentence introduction with what is covered by the first deliverable along with a link to another html page that gives the details.
+[The first part of the dataset](Portfolio1.html)
 
 ### 2. Model Planning and Building
-
-Coming soon...
+Change has been made to the first as well.
+[The second part of the dataset](Portfolio2.html)
 
 ### 3. Results and Operationalization
 
