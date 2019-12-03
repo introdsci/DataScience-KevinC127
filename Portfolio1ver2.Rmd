@@ -1,0 +1,147 @@
+---
+title: "DataScience for my portfolio relationship of video games sales"
+author: "Kevin Chen"
+output:
+  html_document:
+    df_print: paged
+---
+
+This video game data set that I'm using is going to for my Portfolio to find video game sale base on correlation with rating or other factors. 
+
+
+```{r}
+include <- function(library_name){
+  if( !(library_name %in% installed.packages()) )
+    install.packages(library_name) 
+  library(library_name, character.only=TRUE)
+}
+
+include("dplyr")
+include("caret")
+include("tidyverse")
+include("knitr")
+include("ggplot2")
+```
+(move the library to the top because it make more sense)
+(This is to install all the possible needed library)
+
+The tibbles are made to help streamline the date so that if you want to see the correlation between certain data points like in review with time.
+
+
+```{r}
+Old_Data <- read.csv("Video_Game_Sale_as_of_Jan_2017.csv")
+New_Data <- read.csv("https://raw.githubusercontent.com/KevinC127/justthedata/master/newer_Video_Game_Sales_as_of_Jan_2017.csv")
+```
+
+(First I added a larger but same data set called newer_Video_Game_Sale_as_of_Jan_2017.csv)
+(To get the data you need to download it from the github and place it same directory and commited out the older one)
+(why we need this data set is due to having more accurate number and bigger data)
+
+The source of my data come from the website https://www.kaggle.com/kendallgillies/video-game-sales-and-ratings.
+It has over 17,417 entries of different video games and their different type of data, which include platform, Year of release, genre, Publisher, Sales base on continent, score and many more. Due to the massive amount of data/information it was cut off at 1000 for managing purpose. Then place github for use.
+
+Pro:
+Some of the quality of this data this data set present is it large amount of different type of datas. We have not only sales from different area but also user's score and critic's score but also totally amount of critic allow use to get how well diverse the score could have been.
+
+Con:
+Some of the limitation of this data is due to the large amount of categories and types of games title they used form a large amount of time line not all information is available. This leave a lot of NA in the equations. Also the data itself is from 2017 which mean that enough time has pass the could influence certain data and would require certain updates. It also lack exact date of release only year and that could play a large factor in sale.  
+
+
+Varibles:
+
+Names: That is the title of the video game that is sold.
+
+Platform: The system/console that are specially made to played that version of the game. 
+
+Year_of_Release: The year of which it was release but not specific dates.
+
+Genre: The type of games it is to allow for easies finding and categories.
+
+Publisher: The companies that sold that sold the game not necessary made it.
+
+Na_Sales, EU_Sales, JP_Sales and Other_Sales: Are sale base on the continents they are from, well other are the remain that are not from those general location but dont make up enough sale to stand on there own.(in millions)
+
+Global_Sales: The total sales of all that specific video game at that time.(in Millions)
+
+Critic_Score: Is the score usually give by know critic usually working in a reviewing company. The number is between 0-100. (from in this case Metacritic)
+
+Critic_Count: The number of critics used in coming up with the critic score.
+
+User_score: The score given by individual in this case from Metacritic. The score value is 0-10.
+
+User_Count: The amount of User review.
+
+Rating: The ESBR ratings or the rating give to state the appropraite age for the game to be played.
+
+
+
+```{r}
+Video_Game_Data <- na.omit(New_Data)
+```
+(This remove all data that is missing or N/A in any of colm/row for complete dataset.)
+
+
+
+```{r}
+
+sample_selection <- createDataPartition(Video_Game_Data$Global_Sales, p = 0.75, list = FALSE)
+train <- New_Data[sample_selection]
+test <- New_Data[-sample_selection]
+
+train_model <- lm(Video_Game_Data, formula = Global_Sales ~ Critic_Score + Critic_Count + Rating + User_Score + User_Count)
+
+```
+Trying to get correlation value/ R value
+
+
+```{r}
+summary(train_model)
+
+```
+check out train_model
+
+
+
+
+```{r}
+Critic_Ratings <- tidyr::tibble(Name_of_Games=Video_Game_Data$Name, Ratings=Video_Game_Data$Critic_Score, Number_of_Critic=Video_Game_Data$Critic_Count, Total_Sales=Video_Game_Data$Global_Sales)
+
+User_Ratings <- tidyr::tibble(Name_of_Games=Video_Game_Data$Name, Ratings=Video_Game_Data$User_Score, Number_of_Critic=Video_Game_Data$User_Count, Total_Sales=Video_Game_Data$Global_Sales)
+
+Date <- tidyr::tibble(Name_of_Games=Video_Game_Data$Name, Years_of_Release=Video_Game_Data$Year_of_Release, Total_Sales=Video_Game_Data$Global_Sales)
+
+```
+Creating multiple dataset with unique parts
+
+
+```{r}
+ggplot(Video_Game_Data, aes(x=Year_of_Release, y= Global_Sales) ) + geom_col()
+
+```
+
+
+```{r}
+ggplot(Video_Game_Data, aes(x= Global_Sales, y=NA_Sales, color=Genre ) ) + geom_point()
+
+```
+
+
+
+
+
+
+
+Shown when the biggest sales of game that was sold or at least where most prominent years in which games where sold.
+
+Research Questions:
+In my reaserch question I'm trying to find a correlation between sale of video games and the rating of them and if any other particular factors are in place.
+
+Why in particularly made games sale significantly high between 2005-2010?
+
+What made the video game Wii Sports such a high selling games compare to any other games in it's time?
+
+Do the rating from critics necessarily match up with user's rating and whether which one has more effect when it comes to sale of the game?
+
+Do holidays or certain days in the years have effect on the overall sale of the game.
+
+Does the Rating as in ESBR rating which suppose determine the appropriate age in which the game should be played have any overall effect on sale.
