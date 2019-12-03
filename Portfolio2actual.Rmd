@@ -1,0 +1,145 @@
+---
+title: "DataScience for my portfolio relationship of video games sales"
+author: "Kevin Chen"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+```{r}
+
+include <- function(library_name){
+  if( !(library_name %in% installed.packages()) )
+    install.packages(library_name) 
+  library(library_name, character.only=TRUE)
+}
+
+include("dplyr")
+include("caret")
+include("tidyverse")
+include("knitr")
+include("ggplot2")
+include("rvest")
+
+purl("Portfolio1ver2.Rmd", output = "Portfolio2actual.r")
+source("Portfolio2actual.r")
+```
+A function created to help installing the needed library and to tell what we dont have. It also ports all need dataset that was from Portfolio 1 ver2.
+
+First part of Portfolio 2 is to get the second set of data with web scrapping from "https://www.vgchartz.com/analysis/platform_totals/" which has the currently uptodate information on the total sales of current platforms. This is going to be used to help the other data set we have but which is slighly out of data. The total game sale is 2017.
+
+```{r}
+my_url <- "https://www.vgchartz.com/analysis/platform_totals/"
+Game_data_html <- read_html(my_url)
+
+```
+my_url store the url that is going to be used a the second dataset. Then is going to be read and stored in GAme_data_html.
+
+```{r}
+pos_num <- Game_data_html %>% html_nodes("tr>td:nth-child(1)") %>% html_text()
+
+platform <- Game_data_html %>% html_nodes("tr>td:nth-child(2)") %>% html_text()
+
+NA_loc <- Game_data_html %>% html_nodes("tr>td:nth-child(3)") %>% html_text()
+
+Europe <- Game_data_html %>% html_nodes("tr>td:nth-child(4)") %>% html_text()
+
+Japan <- Game_data_html %>% html_nodes("tr>td:nth-child(5)") %>% html_text()
+
+Other_loc <- Game_data_html %>% html_nodes("tr>td:nth-child(6)") %>% html_text()
+
+Global <- Game_data_html %>% html_nodes("tr>td:nth-child(7)") %>% html_text()
+```
+We'll scrap the data from their proper columns and their child and store them in the own group. As each of the data we want is organized by columns. The data well have to be stored in a tibble later because at the moment they are all just vectors.
+
+pos_num: This stand for the postion they're in as the currently in which is the most sold platform.
+
+Platform: The show the specific platform that has sold currently in the area.
+
+Na_loc: The region North America and the total number of that specific platform that was sold in the region.
+
+Japan: The location and the total number of specific platform sold.
+
+Europe: The location and the total number of specific platform sold.
+
+Other_loc: The remain location that is not the other above.
+
+Global: The sum of all the total sale in all region.
+
+```{r}
+print(pos_num)
+print(platform)
+print(NA_loc)
+print(Europe)
+print(Japan)
+print(Other_loc)
+print(Global)
+```
+Write here we just print out all of the vector to make sure there where they are and if we have the correct value in the write groups. 
+
+
+```{r}
+Europe <- Europe[-(35:44)]
+NA_loc <- NA_loc[-(35:44)]
+platform <- platform[-(35:44)]
+pos_num <- pos_num[-(35:44)]
+```
+If you check on the print you'll notice that certain vector had extral value for the data not entirely sure where it came from but they dont seem to mean much. To solve it though I used the give code and remove the rows 35 to 44.
+
+```{r}
+Platform_sales <- tidyr::tibble( Position= pos_num, Platform= platform, North_America= NA_loc, Europe = Europe, Japan= Japan, Other_loc = Other_loc, Global= Global)
+
+```
+The we create a tibble of the newly obtain data that we just got and building a data.frame called Platform_sales.
+These are the modefied names.
+Position = pos_num
+platform = Platform
+na_loc = North_America
+
+
+```{r}
+
+sample_selection <- createDataPartition(Video_Game_Data$Global_Sales, p = 0.75, list = FALSE)
+train <- New_Data[sample_selection]
+test <- New_Data[-sample_selection]
+
+train_model <- lm(Video_Game_Data, formula = Global_Sales ~ Critic_Score + Critic_Count + Rating + User_Score + User_Count)
+
+```
+Trying to get correlation value/R value from the first dataset in Portfolio1ver2.
+using the linear model function to crate a simple regression model to find a basic parameter. I choose to use global sale as the base and the other as it correlation. The reasons why I didnt put platform as a factor it only show 1 type of platform and it's total sale not possible all it's total sales. That maybe not true for all games such as Will Sport which is a exclusive game for a certain platform. This make finding correlation harder for all games unless you know that information ahead of time.
+
+
+```{r}
+summary(train_model)
+
+```
+With summary of the train_model we get to see 4 R value(not counting intercept) that show strong correlation with global sales of video games the biggest being Critic_Count follow by User_count. This make me speculate that it not necessary how high the score the critics give but rather how many actually took time to review it. This make sense in that it would generate more talk/publicity about that game. The other correlation in the data is the Rating in specificaly RatingE getting noticeably higher and logically make sense as the E stand for everybody and a game that allow for the bigger audience would sell more easily.
+
+
+```{r}
+
+
+
+
+```
+
+
+
+
+```{r}
+ggplot(Video_Game_Data, aes(x= Global_Sales, y=NA_Sales, color=Genre ) ) + geom_point()
+
+```
+
+
+
+
+Summary
+The final though on part 2 of the portfolio is that correlation could be a bit missleading in a lot of hidden factor show up when going deeper into the subject. The big thing is that when it comes to review rating a big factor that is not taken account for is how can one review a game before they buy it. This can be answer in some degree in that critic could get their hand on earlier release but that may not be true for the user. Other flaw in the data when compare to the two set is that that global sale in video_game_data is only match to that certain platform which doesnt necessary give all the information need to see it overal all sales to compare with total sale of platform.
+
+A lot more deeper examination of the data to get a better understand of what data is supposed to filter or at least figure out how much of that data is consider to be effective.
+
+
