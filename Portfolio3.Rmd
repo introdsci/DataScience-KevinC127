@@ -1,0 +1,92 @@
+---
+title: "DataScience for my portfolio relationship of video games sales"
+author: "Kevin Chen"
+output:
+  html_document:
+    df_print: paged
+---
+
+
+
+```{r}
+
+include2 <- function(library_name2){
+  if( !(library_name2 %in% installed.packages()) )
+    install.packages(library_name2) 
+  library(library_name2, character.only=TRUE)
+}
+
+include2("dplyr")
+include2("caret")
+include2("tidyverse")
+include2("knitr")
+include2("ggplot2")
+include2("rvest")
+
+purl("Portfolio2actual.Rmd", output = "Part3.r")
+source("Part3.r")
+```
+The process here is just to import data from previous part 2 portfolio.
+
+```{r}
+Video_Game_Data$Platform <- as.character(Video_Game_Data$Platform) 
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PS3"] <- "PlayStation 3 (PS3)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PS2"] <- "PlayStation 2 (PS2)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "GB"] <- "Game Boy (GB)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PS"] <- "PlayStation (PS)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "Will"] <- "Will (Will)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "DS"] <- "Nintendo DS (DS)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PS4"] <- "PlayStation 4 (PS4)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "GBA"] <- "Game Boy Advance (GBA)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PSP"] <- "PlayStation Portable (PSP)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "3DS"] <- "Nintendo 3DS (3DS)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "NS"] <- "Nintendo Switch (NS)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "XOne"] <- "Xbox One (XOne)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "XB"] <- "Xbox (XB)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "GC"] <- "GameCube (GC)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PSV"] <- "PlayStation Vita (PSV)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "WiiU"] <- "Wii U (WiiU)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "Wii"] <- "Wii (Wii)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "PC"] <- "Microsoft Windows (PC)"
+Video_Game_Data$Platform[Video_Game_Data$Platform == "X360"] <- "Xbox 360 (X360)"
+
+```
+First I had to change the type of the platform due to it being a typeof integer rather then character then had all I had varible name change to give better discription on what they where.
+
+```{r}
+Platform_sales$Global_p <- as.double(Platform_sales$Global_p) 
+
+Mod_Video_Game_Data<-left_join(Video_Game_Data, Platform_sales)
+
+Mod_Video_Game_Data$Percent_Platform <- (Mod_Video_Game_Data$Global_Sales / Mod_Video_Game_Data$Global_p) *100
+```
+Typeof variable in Platform_sales$Global_P had to be change to double from character if I wanted to take percentage of the total Global_Sales and Global_p. After that was complete, I left join Video_Game_Data with Platform_sales to get Mod_Video_Game_Data with both platform sales and percentage of that specific platform to the video game.
+
+Information:
+Any name of an columns with _p such as North_America_p stand for the total sales of platform in that specific region ery similar to NA_sales but with platform instead of games.
+
+Position: This stand for the ranking in the most sold platform at that current time.
+
+Percent_Platform: This stand for the percentage of how many people with that specific platform bought that game. The math was ( ( global sales of games) / (global sales of platform) ) * 100.
+
+From the data we can obtain from http://www.vgchartz.com/, the second set we can tell possible amount of game could perceivably sell on that system. Though that only a limited amount of information and at time doesn’t take in many different types of possible variable like type or marketing that put into it. It works better as supplementary data to give more depth or expand current dataset. Another issue the new dataset was the date it was taken late 2019 compare to the older dataset which was 2017. This is a decent enough time gap so data can be skewed, but the reason why we still take the percentage to get a number is to get a overall grasp how big the sale can be and if the percentage is large now it can be hypothesize that data close to that time would have been even closer.
+
+
+Run this part of the code to bring up the dataset.
+
+```{r}
+View(Mod_Video_Game_Data)
+View(Video_Game_Data)
+View(Platform_sales)
+
+```
+The final result of the complete dataset would be Mod_Video_Game_Data with both information form Vidoe_Game_Data and Platform_sales
+
+
+Summary:
+
+When coming up with the idea of researching video games sales and trying to figure out what factors that can cause increase sales, the first idea would be to check on a game with a high number of sales and compare it to others alike and not alike to see what correlate and what doesn’t. 
+
+
+I can’t really say there much of and ethic or social implication in this study but more of a social observation if I can put it to words. In study these data you get a sort of fundamental idea of what is happening what in the data. You can tell that games with larger user review and critic review tend to sell better but if you look up information outside this dataset you can tell that necessarily true. Th same can also be said for platform if you look at how platform sell in relation to video game sale you would think that if you sold more platform of that type you would sell more of that game and the data can support that to some degree. But if you dig deeper and think about it you figure out that most platform is only useful in playing game so you'll would really buy a platform unless you know that the games you get are particularly good.
+
