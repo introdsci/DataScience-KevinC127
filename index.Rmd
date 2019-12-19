@@ -22,6 +22,6 @@ Change has been made to the first as well.
 [The second part of the dataset](Portfolio2actual.html)
 
 ### 3. Results and Operationalization
-This is the final part of the portfolio contenting final thought and possible conclusion for the video game sales portfolio. (As of now html link does not work having minor issue with html knitting)
+This is the final part of the portfolio contenting final thought and possible conclusion for the video game sales portfolio. 
 [The third part of the dataset](Portfolio3.html)
 
