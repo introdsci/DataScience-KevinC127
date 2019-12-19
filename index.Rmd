@@ -12,14 +12,15 @@ This is the computation of datas that is going to be used for building a dataset
 
 ### 1. Discovery and Data Preparation
 
-Provide a one-sentence introduction with what is covered by the first deliverable along with a link to another html page that gives the details.
+This is the first part of the portfolio with the intial dataset. 
 [The first part of the dataset](Portfolio1.html)
 
 ### 2. Model Planning and Building
+In this second part I had scrap information from website pertaining platform sale in hope to help paint a bigger picture of help giving more depth to the original data and build some sort of model.
 Change has been made to the first as well.
-[The second part of the dataset](Portfolio2.html)
+[The second part of the dataset](Portfolio2actual.html)
 
 ### 3. Results and Operationalization
-
-Coming soon...
+This is the final part of the portfolio contenting final thought and possible conclusion for the video game sales portfolio. (As of now html link does not work having minor issue with html knitting)
+[The third part of the dataset](Portfolio3.html)
 
